@@ -36,8 +36,8 @@ jobs:
         id: run-tests
         run: npm run test
       - name: Upload test report
-        # use the id referece for tests steps and via the outcome field to conditionally run this step
-        if: failure() && steps.run-tests.outcome == 'failure'
+        # use the id reference for tests steps and via the outcome field to conditionally run this step
+        if: ${{ always() && steps.run-tests.outcome == 'failure' }}
         uses: actions/upload-artifact@v4
         with:
           name: test-report
