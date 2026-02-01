@@ -2,7 +2,7 @@ name: Website Deployment
 on:
   push:
     branches:
-      - main
+      - master
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
       - name: Cache dependencies
         id: cache
         uses: actions/cache@v3
@@ -33,9 +33,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Test code
+        id: run-tests
         run: npm run test
       - name: Upload test report
-        uses: actions/upload-artifact@v3
+        # use the id referece for tests steps and via the outcome field to conditionally run this step
+        if: steps.run-tests.outcome == 'failure'
+        uses: actions/upload-artifact@v4
         with:
           name: test-report
           path: test.json
