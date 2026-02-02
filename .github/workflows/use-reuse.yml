@@ -76,13 +76,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Print deploy result
-        run: echo "Deployment result: ${{ needs.deploy.outputs.outcome }}"
+        run: echo "Deployment result: ${{ needs.deploy.outputs.result }}"
   report:
-      needs: [lint, deploy]
-      if: failure()
-      runs-on: ubuntu-latest
-      steps:
-        - name: Generate report
-          run: |
-            echo "Generating report..."
-            echo "${{ toJSON(github) }}"
+    needs: [lint, deploy]
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate report
+        run: |
+          echo "Generating report..."
+          echo "${{ toJSON(github) }}"
