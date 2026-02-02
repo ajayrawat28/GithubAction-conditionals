@@ -1,8 +1,28 @@
 name: Reusable workflow
-on: workflow_call
+on: 
+  workflow_call:
+    inputs:
+      artifact-name:
+        description: 'Name of the artifact to download'
+        required: false
+        default: dist
+        type: string
+    outputs:
+      result:
+        description: The result of the deployment
+        value: ${{ jobs.deploy.outputs.outcome}}
 jobs:
   deploy:
+    outputs: 
+      outcome : ${{ steps.set-result.outputs.step-result }}
     runs-on: ubuntu-latest
     steps:
-      - name: Deploying...
-        run: echo "Deploying..."
+      -name: Get code
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact-name }} 
+      - name: Output informations
+        run: echo "Deploying artifact: ${{ inputs.artifact-name }}"
+      - name: Set result output
+        id: set-result
+        run: echo "step-result= success" >> $GITHUB_OUTPUT"
